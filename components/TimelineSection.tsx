@@ -117,7 +117,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ language }) =>
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8">
            {/* Backdrop */}
            <div 
-             className={`absolute inset-0 bg-black/60 dark:bg-black/80 ${isModalOpen ? 'backdrop-enter-active' : 'backdrop-exit-active'}`}
+             className={`absolute inset-0 bg-black/60 dark:bg-black/80 ${isModalOpen ? 'animate-[fadeIn_0.3s_ease-out_forwards]' : 'animate-fade-out'}`}
              onClick={() => setIsModalOpen(false)}
            ></div>
 
@@ -127,7 +127,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ language }) =>
              bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl 
              rounded-[2rem] shadow-2xl border border-white/20 dark:border-white/10
              p-6 md:p-16 flex flex-col
-             ${isModalOpen ? 'modal-enter-active' : 'modal-exit-active'}
+             ${isModalOpen ? 'animate-message-pop' : 'animate-message-pop-out'}
            `}>
              
              {/* Close Button */}

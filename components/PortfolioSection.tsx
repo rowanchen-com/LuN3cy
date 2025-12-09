@@ -15,6 +15,7 @@ interface PortfolioSectionProps {
 export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, externalFilter }) => {
   const [filter, setFilter] = useState<string>('All');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [displayProject, setDisplayProject] = useState<Project | null>(null);
   const [isModalRendered, setIsModalRendered] = useState(false);
   
   // Sync with external filter if provided
@@ -39,11 +40,15 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
   // Handle Modal Render State for Animation
   useEffect(() => {
     if (selectedProject) {
+      setDisplayProject(selectedProject);
       setIsModalRendered(true);
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
-      const timer = setTimeout(() => setIsModalRendered(false), 300);
+      const timer = setTimeout(() => {
+        setIsModalRendered(false);
+        setDisplayProject(null);
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [selectedProject]);
@@ -201,7 +206,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
 
            {/* Backdrop - Use solid color opacity instead of blur for performance */}
            <div 
-             className={`absolute inset-0 bg-black/80 ${selectedProject ? 'backdrop-enter-active' : 'backdrop-exit-active'}`}
+             className={`absolute inset-0 bg-black/80 ${selectedProject ? 'animate-[fadeIn_0.3s_ease-out_forwards]' : 'animate-fade-out'}`}
              onClick={() => setSelectedProject(null)}
            ></div>
 
@@ -211,10 +216,10 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
              bg-white dark:bg-gray-900 
              rounded-[2rem] shadow-2xl border border-white/20 dark:border-white/10
              flex flex-col
-             ${selectedProject ? 'modal-enter-active' : 'modal-exit-active'}
+             ${selectedProject ? 'animate-message-pop' : 'animate-message-pop-out'}
            `}>
              
-             {selectedProject && (
+             {displayProject && (
                <>
                  {/* Close Button */}
                  <button 
@@ -224,18 +229,18 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                    <X size={24} className="text-black dark:text-white" />
                  </button>
 
-                 {selectedProject.category === Category.PHOTO ? (
+                 {displayProject.category === Category.PHOTO ? (
                     // SPECIAL PHOTO LAYOUT
                     <div className="p-6 md:p-12 flex flex-col items-center min-h-full">
                         <h2 className="text-3xl md:text-5xl font-black text-black dark:text-white mb-4 text-center">
-                            {selectedProject.title}
+                            {displayProject.title}
                         </h2>
                         <p className="text-xl text-gray-500 dark:text-gray-400 max-w-2xl text-center mb-12 font-medium">
-                            {selectedProject.description}
+                            {displayProject.description}
                         </p>
                         
                         {(() => {
-                            const gallery = selectedProject.gallery || PHOTOGRAPHY_GALLERY[selectedProject.id];
+                            const gallery = displayProject.gallery || PHOTOGRAPHY_GALLERY[displayProject.id];
                             return gallery && gallery.length > 0 ? (
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-full">
                                     {gallery.map((item, idx) => (
@@ -255,7 +260,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                                         >
                                             <img 
                                                 src={item} 
-                                                alt={`${selectedProject.title} ${idx + 1}`} 
+                                                alt={`${displayProject.title} ${idx + 1}`} 
                                                 loading="lazy"
                                                 decoding="async"
                                                 className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105 will-change-transform transform-gpu backface-hidden opacity-0" 
@@ -278,22 +283,22 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                      {/* Hero Media (Video, Bilibili, Figma or Image) */}
                      <div className={`
                         w-full bg-gray-200 dark:bg-gray-800 relative group-modal-media shrink-0
-                        ${(selectedProject.figmaUrl || selectedProject.websiteUrl) ? 'h-[60vh] md:h-[80vh]' : 
-                          (selectedProject.videoUrl || selectedProject.bilibiliId) ? 'aspect-video' : 
+                        ${(displayProject.figmaUrl || displayProject.websiteUrl) ? 'h-[60vh] md:h-[80vh]' : 
+                          (displayProject.videoUrl || displayProject.bilibiliId) ? 'aspect-video' : 
                           'h-[30vh] md:h-[50vh]'}
                      `}>
-                        {selectedProject.videoUrl ? (
+                        {displayProject.videoUrl ? (
                            <video 
-                              src={selectedProject.videoUrl} 
+                              src={displayProject.videoUrl} 
                               controls 
                               className="w-full h-full object-contain bg-black"
-                              poster={selectedProject.image}
+                              poster={displayProject.image}
                            />
-                        ) : selectedProject.bilibiliId ? (
+                        ) : displayProject.bilibiliId ? (
                            // Bilibili Player with Click-to-Load Optimization
                            <div className="w-full h-full bg-black relative group">
                                 <iframe
-                                    src={`https://player.bilibili.com/player.html?bvid=${selectedProject.bilibiliId}&page=1&high_quality=1&danmaku=0&autoplay=0`}
+                                    src={`https://player.bilibili.com/player.html?bvid=${displayProject.bilibiliId}&page=1&high_quality=1&danmaku=0&autoplay=0`}
                                     className="w-full h-full relative z-10"
                                     scrolling="no"
                                     frameBorder="0"
@@ -301,32 +306,32 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                                     sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts allow-presentation"
                                 ></iframe>
                            </div>
-                        ) : selectedProject.figmaUrl ? (
+                        ) : displayProject.figmaUrl ? (
                            <iframe
-                             src={`https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(selectedProject.figmaUrl)}`}
+                             src={`https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(displayProject.figmaUrl)}`}
                              className="w-full h-full border-none"
                              allowFullScreen
                            ></iframe>
-                        ) : selectedProject.websiteUrl ? (
+                        ) : displayProject.websiteUrl ? (
                            <iframe
-                             src={selectedProject.websiteUrl}
+                             src={displayProject.websiteUrl}
                              className="w-full h-full border-none bg-white"
-                             title={selectedProject.title}
+                             title={displayProject.title}
                              allowFullScreen
                            ></iframe>
                         ) : (
                            <>
-                              {selectedProject.image && !selectedProject.image.includes('picsum') ? (
+                              {displayProject.image && !displayProject.image.includes('picsum') ? (
                                   <img 
-                                    src={selectedProject.image} 
-                                    alt={selectedProject.title} 
+                                    src={displayProject.image} 
+                                    alt={displayProject.title} 
                                     referrerPolicy="no-referrer"
                                     className="w-full h-full object-cover" 
                                   />
                               ) : (
                                   <div className="w-full h-full flex items-center justify-center bg-gray-300 dark:bg-gray-800">
                                       <div className="text-center">
-                                          <h2 className="text-4xl font-black text-black/20 dark:text-white/20 mb-2">{selectedProject.title}</h2>
+                                          <h2 className="text-4xl font-black text-black/20 dark:text-white/20 mb-2">{displayProject.title}</h2>
                                           <p className="text-xl font-bold text-black/20 dark:text-white/20 uppercase tracking-widest">
                                               {language === 'zh' ? '预览部署中...' : 'Preview Deploying...'}
                                           </p>
@@ -343,15 +348,15 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                        <div className="mb-8 md:mb-12">
                          <div className="flex items-center gap-3 mb-4">
                            <span className="px-4 py-1.5 bg-black dark:bg-white text-white dark:text-black text-sm font-bold uppercase rounded-md">
-                             {CATEGORY_LABELS[language][selectedProject.category] || selectedProject.category}
+                             {CATEGORY_LABELS[language][displayProject.category] || displayProject.category}
                            </span>
-                           <span className="text-gray-500 font-mono text-sm uppercase font-bold tracking-widest">{selectedProject.subtitle}</span>
+                           <span className="text-gray-500 font-mono text-sm uppercase font-bold tracking-widest">{displayProject.subtitle}</span>
                          </div>
                          <h2 className="text-4xl md:text-6xl font-black text-black dark:text-white mb-6 leading-tight">
-                           {selectedProject.title}
+                           {displayProject.title}
                          </h2>
                          <p className="text-2xl md:text-3xl font-medium text-gray-600 dark:text-gray-300 max-w-3xl leading-relaxed">
-                           {selectedProject.description}
+                           {displayProject.description}
                          </p>
                        </div>
 
@@ -361,13 +366,13 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20">
                          
                          {/* Left Col: Concept - Thinner Line */}
-                         {selectedProject.concept && (
+                         {displayProject.concept && (
                              <div className="space-y-8">
                                 <h3 className="text-2xl font-black uppercase tracking-wide text-black dark:text-white border-l-4 border-black dark:border-white pl-6">
                                   {language === 'zh' ? '设计意图 / 创意陈述' : 'Concept / Statement'}
                                 </h3>
                                 <p className="text-xl leading-relaxed text-gray-600 dark:text-gray-300">
-                                   {selectedProject.concept}
+                                   {displayProject.concept}
                                 </p>
                              </div>
                          )}
@@ -375,13 +380,13 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                          {/* Right Col: Details */}
                          <div className="space-y-10">
                             {/* Awards - Aligned Star */}
-                            {selectedProject.awards && selectedProject.awards.length > 0 && (
+                            {displayProject.awards && displayProject.awards.length > 0 && (
                                 <div className="space-y-4">
                                   <h4 className="text-base font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider">
                                     {language === 'zh' ? '获奖情况' : 'Awards & Recognition'}
                                   </h4>
                                   <ul className="space-y-3">
-                                        {selectedProject.awards.map((award, i) => {
+                                        {displayProject.awards.map((award, i) => {
                                           const isNone = award === "暂无获奖" || award === "无" || award === "None";
                                           return (
                                             <li key={i} className={`flex items-baseline font-bold text-xl ${isNone ? 'text-gray-400 dark:text-gray-500' : 'text-black dark:text-white'}`}>
@@ -402,8 +407,8 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                                         {language === 'zh' ? '分工与职责' : 'Role & Responsibility'}
                                     </h4>
                                     <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
-                                        <span className="font-bold text-black dark:text-white block mb-1 text-lg">{selectedProject.role}</span>
-                                        {selectedProject.roleDetail}
+                                        <span className="font-bold text-black dark:text-white block mb-1 text-lg">{displayProject.role}</span>
+                                        {displayProject.roleDetail}
                                     </p>
                                 </div>
 
@@ -411,7 +416,7 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                                 <div className="space-y-4 flex-1 min-w-[200px]">
                                     <h4 className="text-base font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider">Tags</h4>
                                     <div className="flex flex-wrap gap-2">
-                                        {selectedProject.tags.map(tag => (
+                                        {displayProject.tags.map(tag => (
                                             <span key={tag} className="text-xs font-bold font-mono text-gray-500 border border-gray-300 dark:border-gray-700 px-3 py-1.5 rounded-lg">
                                                 {tag}
                                             </span>
@@ -420,20 +425,20 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                                 </div>
 
                                 {/* Links */}
-                                {(selectedProject.githubUrl || selectedProject.websiteUrl) && (
+                                {(displayProject.githubUrl || displayProject.websiteUrl) && (
                                     <div className="space-y-4 flex-1 min-w-[200px]">
                                         <h4 className="text-base font-bold uppercase text-gray-400 dark:text-gray-500 tracking-wider">
                                             {language === 'zh' ? '相关链接' : 'Links'}
                                         </h4>
                                         <div className="flex flex-wrap gap-4">
-                                            {selectedProject.githubUrl && (
-                                                <a href={selectedProject.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                            {displayProject.githubUrl && (
+                                                <a href={displayProject.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                                                     <Github size={18} />
                                                     <span className="font-bold underline decoration-2 underline-offset-4 text-sm">GitHub</span>
                                                 </a>
                                             )}
-                                            {selectedProject.websiteUrl && (
-                                                <a href={selectedProject.websiteUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                                            {displayProject.websiteUrl && (
+                                                <a href={displayProject.websiteUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                                                     <ExternalLink size={18} />
                                                     <span className="font-bold underline decoration-2 underline-offset-4 text-sm">Demo</span>
                                                 </a>
@@ -448,15 +453,15 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
                        </div>
 
                        {/* Gallery */}
-                       {selectedProject.gallery && selectedProject.gallery.length > 0 && (
+                       {displayProject.gallery && displayProject.gallery.length > 0 && (
                           <div className="mt-16 md:mt-24 border-t border-gray-200 dark:border-gray-800 pt-16">
                              <h3 className="text-2xl font-black uppercase tracking-widest text-black dark:text-white mb-8">
                                {language === 'zh' ? '项目展示' : 'Project Gallery'}
                              </h3>
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                               {selectedProject.gallery.map((img, idx) => (
+                               {displayProject.gallery.map((img, idx) => (
                                  <div key={idx} className="rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                                    <img src={img} alt={`${selectedProject.title} gallery ${idx + 1}`} className="w-full h-auto object-cover" />
+                                    <img src={img} alt={`${displayProject.title} gallery ${idx + 1}`} className="w-full h-auto object-cover" />
                                  </div>
                                ))}
                              </div>
