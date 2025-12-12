@@ -69,24 +69,41 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ language }) =>
   };
   const decryptPayload = async (answer: string) => {
     try {
+      console.log('[Decrypt] Start with answer:', answer);
       const url = new URL('secure/education.enc.json', document.baseURI).toString();
       let payload: any;
       try {
+        console.log('[Decrypt] Fetching payload from:', url);
         const res = await fetch(url, { cache: 'no-store' });
-        payload = res.ok ? await res.json() : EMBEDDED_ENC;
-      } catch {
+        if (res.ok) {
+          payload = await res.json();
+          console.log('[Decrypt] Payload fetched successfully');
+        } else {
+          console.warn('[Decrypt] Fetch failed:', res.status, res.statusText);
+          payload = EMBEDDED_ENC;
+        }
+      } catch (e) {
+        console.error('[Decrypt] Network error, using embedded fallback:', e);
         payload = EMBEDDED_ENC;
       }
+      
+      console.log('[Decrypt] Deriving key...');
       const key = await deriveKey(answer, payload.salt);
       const iv = base64ToBytes(payload.iv);
       const ct = base64ToBytes(payload.ct);
+      console.log('[Decrypt] Decrypting AES-GCM...');
       const buf = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
       const text = new TextDecoder().decode(buf);
       const data = JSON.parse(text);
+      console.log('[Decrypt] Decrypted data keys:', Object.keys(data));
+      
       const localeData = data[language] ?? data;
       setExperiences(Array.isArray(localeData.experiences) ? localeData.experiences : []);
       setHonors(localeData.honors || { scholarships: [], titles: [], competitions: [] });
-    } catch {}
+      console.log('[Decrypt] State updated.');
+    } catch (err) {
+      console.error('[Decrypt] Failed:', err);
+    }
   };
 
   const handleUnlockSubmit = (e: React.FormEvent) => {
