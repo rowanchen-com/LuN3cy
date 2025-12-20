@@ -14,9 +14,9 @@ export const DESIGN_DATA: Project[] = [
       ]
     },
     zh: {
-      title: '征辰 HMI 设计',
+      title: '视觉设计系统 | 征辰 HMI 设计',
       subtitle: 'UI/UX 设计',
-      description: '新能源汽车（NEV）的人机交互界面设计。采用玻璃拟态和柔和渐变的“视觉减重”系统。',
+      description: '新能源汽车的人机交互界面设计。采用玻璃拟态和柔和渐变的“视觉减重”系统。',
       role: 'UI 设计师',
       tags: ['汽车', 'HMI', 'Figma'],
       awards: ["课程设计优秀作品"],
@@ -24,7 +24,7 @@ export const DESIGN_DATA: Project[] = [
       roleDetail: "独立完成从中控大屏到仪表盘的整套UI绘制与交互逻辑设计。"
     },
     en: {
-      title: 'Journey HMI System',
+      title: 'HMI | Pilgrimage HMI System',
       subtitle: 'UI/UX Design',
       description: 'HMI design for New Energy Vehicles (NEV). A "Visual Weight Reduction" system featuring glassmorphism and soft gradients.',
       role: 'UI Designer',
@@ -42,7 +42,7 @@ export const DESIGN_DATA: Project[] = [
       figmaUrl: 'https://www.figma.com/design/NDxB7Lh3WxAbSuCTJj2DU1/MY-BRAND-%7C-%E5%85%AC%E4%BC%97%E5%8F%B7%E7%89%A9%E6%96%99%E8%AE%BE%E8%AE%A1%EF%BC%9A%E5%B1%B1%E6%B5%B7%E7%96%97%E5%85%BB%E9%99%A2?node-id=0-1&t=WQZ4agZJUDV7xMFW-1'
     },
     zh: {
-      title: '山海疗养院',
+      title: '视觉设计系统 | 山海疗养院',
       subtitle: '品牌 & VI',
       description: '本人公众号旅游类频道的视觉识别系统。',
       role: '品牌设计师',
@@ -54,7 +54,7 @@ export const DESIGN_DATA: Project[] = [
     en: {
       title: 'Serenity Vista',
       subtitle: 'Branding & VI',
-      description: 'Visual identity system for my personal travel channel.',
+      description: 'VI | Visual identity system for my personal travel channel.',
       role: 'Brand Designer',
       tags: ['Branding', 'VI', 'Travel'],
       awards: ["None"],
@@ -70,7 +70,7 @@ export const DESIGN_DATA: Project[] = [
       figmaUrl: 'https://www.figma.com/design/z3UFyuPdEXd6hjG9CN1Ax2/%E5%B9%B3%E9%9D%A2-%7C-%E6%9C%88%E5%85%89%E7%96%97%E5%85%BB%E9%99%A2?node-id=0-1&t=BQlZwjpSjHFDooFz-1'
     },
     zh: {
-      title: '月光疗养院',
+      title: '信息图表 | 月光疗养院',
       subtitle: '信息可视化',
       description: '关于青年睡眠不足（“熬夜”）的信息图表。2.5D 插画风格。',
       role: '视觉设计师',
@@ -80,7 +80,7 @@ export const DESIGN_DATA: Project[] = [
       roleDetail: "数据收集、文案梳理、插画绘制及排版。"
     },
     en: {
-      title: 'Moonlight Nursing',
+      title: 'Infographic | Moonlight Nursing',
       subtitle: 'Information Visualization',
       description: 'Infographic regarding youth sleep deprivation ("Staying up late"). 2.5D illustration style.',
       role: 'Visual Designer',
@@ -88,6 +88,62 @@ export const DESIGN_DATA: Project[] = [
       awards: ["3rd Prize (Central South Region)"],
       concept: "Initially, I considered a flat design, but if data viz is too flat, it conflicts with the data itself visually. To avoid visual fatigue, I adopted a 2.5D + outline scheme to add depth, using low-saturation complementary colors with red as an accent.",
       roleDetail: "Data collection, copywriting, illustration, and layout."
+    }
+  },
+  {
+    id: 'd4',
+    common: {
+      category: 'Graphics & UI',
+      image: 'https://www.figma.com/file/M9L3zEuJBRhj41JuXrOEO5/thumbnail',
+      figmaUrl: 'https://www.figma.com/design/M9L3zEuJBRhj41JuXrOEO5/%E8%AE%A1%E8%AE%BE-%7C-%E6%95%B0%E5%AD%97%E7%9F%AD%E7%89%87?node-id=0-1&t=GjOH16Ga485SW7OC-1'
+    },
+    zh: {
+      title: '视觉设计系统 | 圆方之比',
+      subtitle: '视觉设计系统',
+      description: '《圆方之比，天地之合》的完整视觉设计系统，包括视频内元素设计、后续相关PPT。',
+      role: '视觉设计师',
+      tags: ['品牌', '视频视觉', 'Figma'],
+      awards: ["无"],
+      concept: "仿古牛皮纸设计，新中式设计风格。",
+      roleDetail: "视觉概念定义、图形系统开发及延展设计。"
+    },
+    en: {
+      title: 'Circle & Square System',
+      subtitle: 'Visual Design System',
+      description: 'The complete visual design system for 《圆方之比，天地之合》, including in-video element design and subsequent related PPT materials.',
+      role: 'Visual Designer',
+      tags: ['Branding', 'Video Visual', 'Figma'],
+      awards: ["None"],
+      concept: "Antique kraft paper design, new Chinese-style design.",
+      roleDetail: "Visual concept definition, graphic system development, and extension design."
+    }
+  },
+  {
+    id: 'd5',
+    common: {
+      category: 'Graphics & UI',
+      image: 'https://www.figma.com/file/hslZfU850zu8tJ6P1Y6fbC/thumbnail',
+      figmaUrl: 'https://www.figma.com/design/hslZfU850zu8tJ6P1Y6fbC/%E6%AF%95%E8%AE%BE-%7C-%E8%AE%A1%E9%87%8F%E7%94%B5%E5%BD%B1%E5%AD%A6%E5%8F%AF%E8%A7%86%E5%8C%96?node-id=0-1&t=BT0hFhRYsmFehU60-1'
+    },
+    zh: {
+      title: '本科毕设 | 基于计量电影学的影片信息图表设计',
+      subtitle: '视觉设计系统',
+      description: '基于计量电影学（Cinemetrics）的信息图表设计项目，主要是对电影进行内容上的数据分析可视化。',
+      role: '全包',
+      tags: ['信息图表', '视计量电影学', 'Figma'],
+      awards: ["无"],
+      concept: "模拟荧幕的暗调设计风格以及霓虹高饱和提示色设计。",
+      roleDetail: "啥都干啊，这可是我的毕设。"
+    },
+    en: {
+      title: 'Infographic Design for Movie Information | Undergraduate Thesis',
+      subtitle: 'Visual Design System',
+      description: 'The infographic design project based on Cinemetrics, which mainly focuses on the content analysis and visualization of movies.',
+      role: 'ALL',
+      tags: ['Infographic', 'Cinemetrics', 'Figma'],
+      awards: ["None"],
+      concept: "Antique kraft paper design, new Chinese-style design.",
+      roleDetail: "Cover everything."
     }
   }
 ];
