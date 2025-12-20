@@ -116,6 +116,15 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
     const newTime = parseFloat(target.value);
     if (audioRef.current) {
         audioRef.current.currentTime = newTime;
+        if (isPlaying) {
+            const playPromise = audioRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.error("Playback failed after seek:", error);
+                    setIsPlaying(false);
+                });
+            }
+        }
     }
   };
 
@@ -124,12 +133,17 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
     setProgress(newTime);
   };
 
-  // Get direct MP3 url using the standard Netease pattern
-  // Note: This relies on the open endpoint which usually works for standard quality
-  // Use https to avoid mixed content errors
+  // Format time in seconds to M:SS
+  const formatTime = (time: number) => {
+    if (isNaN(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  // Get audio source URL
   const getSongUrl = (song: Song) => {
-    if (song.url) return song.url;
-    return `https://music.163.com/song/media/outer/url?id=${song.id}.mp3`;
+    return song.audio;
   };
 
   // Ensure audio is properly disposed only when component unmounts
@@ -236,24 +250,31 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
             </div>
 
             {/* Controls */}
-            <div className="flex flex-col gap-4 relative z-10">
-              {/* Progress Bar */}
-              <div className="relative group">
-                <input
-                  type="range"
-                  min="0"
-                  max={duration || 100}
-                  value={progress}
-                  onMouseDown={handleSeekStart}
-                  onTouchStart={handleSeekStart}
-                  onChange={handleSeek}
-                  onMouseUp={handleSeekEnd}
-                  onTouchEnd={handleSeekEnd}
-                  className="w-full h-1.5 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-full appearance-none cursor-pointer focus:outline-none"
-                  style={{
-                    background: `linear-gradient(to right, ${document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.9)' : 'rgba(24,24,27,0.8)'} ${(progress / (duration || 1)) * 100}%, transparent ${(progress / (duration || 1)) * 100}%)`
-                  }}
-                />
+            <div className="flex flex-col gap-3 relative z-10">
+              {/* Progress Bar & Time */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex justify-end items-center px-0.5">
+                  <span className="text-[10px] font-medium text-zinc-500/80 dark:text-zinc-400/80 tabular-nums">
+                    {formatTime(progress)} / {formatTime(duration)}
+                  </span>
+                </div>
+                <div className="relative group h-4 flex items-center">
+                  <input
+                    type="range"
+                    min="0"
+                    max={duration || 100}
+                    value={progress}
+                    onMouseDown={handleSeekStart}
+                    onTouchStart={handleSeekStart}
+                    onChange={handleSeek}
+                    onMouseUp={handleSeekEnd}
+                    onTouchEnd={handleSeekEnd}
+                    className="music-progress-range w-full h-1.5 bg-zinc-200/50 dark:bg-zinc-800/50 rounded-full appearance-none cursor-pointer focus:outline-none relative z-10"
+                    style={{
+                      background: `linear-gradient(to right, ${document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.9)' : 'rgba(24,24,27,0.8)'} ${(progress / (duration || 1)) * 100}%, transparent ${(progress / (duration || 1)) * 100}%)`
+                    }}
+                  />
+                </div>
               </div>
 
               <div className="flex items-center justify-between gap-3">
@@ -328,6 +349,40 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
         }
         .animate-scale-out {
           animation: scale-out 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        /* Fix range input thumb alignment */
+        .music-progress-range::-webkit-slider-thumb {
+          appearance: none;
+          width: 12px;
+          height: 12px;
+          background: #18181b; /* zinc-900 */
+          border-radius: 50%;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 0 5px rgba(0,0,0,0.1);
+          transition: all 0.2s ease;
+        }
+        .music-progress-range::-moz-range-thumb {
+          width: 12px;
+          height: 12px;
+          background: #18181b;
+          border-radius: 50%;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 0 5px rgba(0,0,0,0.1);
+          transition: all 0.2s ease;
+        }
+        .music-progress-range:hover::-webkit-slider-thumb {
+          transform: scale(1.1);
+          box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .dark .music-progress-range::-webkit-slider-thumb {
+          background: white;
+          border-color: #18181b;
+        }
+        .dark .music-progress-range::-moz-range-thumb {
+          background: white;
+          border-color: #18181b;
         }
       `}</style>
     </div>
