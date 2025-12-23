@@ -333,6 +333,21 @@ export const ARTICLE_DATA = [
     }
   },
   {
+    id: 'a21',
+    common: {
+      category: ArticleCategory.DIT,
+      link: 'https://mp.weixin.qq.com/s/_1EbavTOnRPSmrWYTgVJ4w',
+      coverImage: 'https://mmbiz.qpic.cn/mmbiz_png/MpZIibj0bjSxg6cGXy7Jp7f540iaUym4STFOic7HhGYicLogGg1aw2OVcpeFb0XDDmiaP63Jhre6HjVQFoMSiaaXWCaQ/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=0',
+      date: '2025-12-23'
+    },
+    zh: {
+      title: '个人周报 | 25/12/15~25/12/21',
+    },
+    en: {
+      title: 'Weekly Report | 25/12/15~25/12/21',
+    }
+  },
+  {
     id: 'l1',
     common: {
       category: ArticleCategory.LUNA,
