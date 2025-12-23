@@ -658,7 +658,7 @@ function App() {
   return (
     <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white font-sans selection:bg-black dark:selection:bg-white selection:text-white dark:selection:text-black overflow-x-hidden transition-colors duration-300">
       
-      <MusicPlayer />
+      <MusicPlayer language={language} />
       {/* Dynamic Navigation */}
       <Sidebar 
         activeTab={activeTab} 

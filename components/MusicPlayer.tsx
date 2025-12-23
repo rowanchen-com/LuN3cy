@@ -3,11 +3,14 @@ import { Music, X, Play, Pause, SkipForward, SkipBack, Volume2, VolumeX } from '
 import { MUSIC_PLAYLIST, Song } from '../src/data/music';
 import ElasticSlider from './ElasticSlider';
 
+import { Language } from '../types';
+
 interface MusicPlayerProps {
   initialVisible?: boolean;
+  language?: Language;
 }
 
-export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false }) => {
+export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false, language = 'zh' }) => {
   const [isSeeking, setIsSeeking] = useState(false);
   const [isOpen, setIsOpen] = useState(initialVisible);
   const [showPrompt, setShowPrompt] = useState(false);
@@ -178,22 +181,22 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
 
       {/* Floating Prompt Bubble */}
       {showPrompt && !isOpen && (
-        <div className="pointer-events-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-2xl p-4 animate-bounce-subtle max-w-[200px]">
+        <div className="pointer-events-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-2xl p-4 animate-bounce-subtle max-w-[220px]">
           <p className="text-sm font-medium mb-3 text-zinc-800 dark:text-zinc-200">
-            👋 要不要来一首好听的歌？
+            {language === 'zh' ? '👋 来点氛围音乐？' : '👋 How about some ambient music?'}
           </p>
           <div className="flex gap-2 justify-end">
             <button 
               onClick={() => handlePromptResponse(false)}
               className="px-3 py-1.5 text-xs text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors"
             >
-              不了
+              {language === 'zh' ? '不了' : 'No thanks'}
             </button>
             <button 
               onClick={() => handlePromptResponse(true)}
               className="px-3 py-1.5 text-xs bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg hover:opacity-90 transition-opacity font-medium"
             >
-              好呀
+              {language === 'zh' ? '阔以' : 'Sure'}
             </button>
           </div>
         </div>
@@ -205,7 +208,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
           <button
             onClick={() => setIsOpen(true)}
             className="w-12 h-12 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-white/20 dark:border-zinc-700/50 rounded-full shadow-lg flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:scale-110 transition-transform duration-200 group"
-            title="Open Music Player"
+            title={language === 'zh' ? '打开播放器' : 'Open Music Player'}
           >
             <Music className={`w-5 h-5 ${isPlaying ? 'animate-spin-slow' : 'group-hover:animate-spin-slow'}`} />
           </button>
@@ -220,7 +223,9 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
             <div className="flex items-center justify-between mb-5 relative z-10">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)] animate-pulse"></span>
-                <span className="text-[10px] font-bold text-zinc-500/80 dark:text-zinc-400/80 uppercase tracking-widest">Now Playing</span>
+                <span className="text-[10px] font-bold text-zinc-500/80 dark:text-zinc-400/80 uppercase tracking-widest">
+                  {language === 'zh' ? '正在播放' : 'Now Playing'}
+                </span>
               </div>
               <button 
                 onClick={handleClose}
