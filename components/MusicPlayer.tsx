@@ -245,7 +245,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
 
             {/* Cover & Info */}
             <div className="flex gap-4 mb-5 relative z-10">
-              <div className={`w-20 h-20 rounded-xl overflow-hidden shadow-lg shrink-0 border border-black/5 dark:border-white/5 ${isPlaying ? 'animate-pulse-slow' : ''}`}>
+              <div className="w-20 h-20 rounded-xl overflow-hidden shadow-lg shrink-0 border border-black/5 dark:border-white/5">
                 <img 
                   src={resolveAssetPath(currentSong.cover)} 
                   alt={currentSong.title}
