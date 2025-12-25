@@ -25,7 +25,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate, onCategory
   const handleHeadlineClick = (category: Category | null) => {
     if (category) {
       // Navigate to portfolio and filter
-      onNavigate('portfolio');
+      // onNavigate('portfolio') is removed because onCategorySelect already handles navigation
       onCategorySelect(category);
     } else {
       // Show "Still Learning" Toast
