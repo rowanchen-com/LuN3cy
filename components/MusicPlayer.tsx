@@ -20,12 +20,27 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
   const [volume, setVolume] = useState(0.5);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showLoadingUI, setShowLoadingUI] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const currentSong = MUSIC_PLAYLIST[currentSongIndex];
 
   const [hasInteracted, setHasInteracted] = useState(false);
+
+  // Debounce loading UI to prevent flickering on fast connections
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isLoading) {
+      timer = setTimeout(() => {
+        setShowLoadingUI(true);
+      }, 400); // Only show loading spinner if it takes longer than 400ms
+    } else {
+      setShowLoadingUI(false);
+    }
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   // Clear fade interval on unmount
   useEffect(() => {
@@ -247,6 +262,10 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
         ref={audioRef}
         src={getSongUrl(currentSong)}
         crossOrigin="anonymous"
+        onLoadStart={() => setIsLoading(true)}
+        onWaiting={() => setIsLoading(true)}
+        onCanPlay={() => setIsLoading(false)}
+        onPlaying={() => setIsLoading(false)}
         onTimeUpdate={(e) => {
             if (!isSeeking) {
                 setProgress(e.currentTarget.currentTime);
@@ -257,6 +276,7 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
         onError={() => {
           console.error("Audio load failed for song:", currentSong.title);
           setIsPlaying(false);
+          setIsLoading(false);
         }}
       />
 
@@ -313,9 +333,11 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
               {/* Header */}
               <div className="flex items-center justify-between mb-6 relative z-10">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)] animate-pulse"></span>
-                  <span className="text-[10px] font-bold text-white/90 uppercase tracking-widest drop-shadow-md">
-                    {language === 'zh' ? '正在播放' : 'Now Playing'}
+                  <span className={`w-2 h-2 rounded-full ${showLoadingUI && isPlaying ? 'bg-amber-400 animate-pulse' : 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.6)] animate-pulse'}`}></span>
+                  <span className={`text-[10px] font-bold text-white/90 uppercase tracking-widest drop-shadow-md ${showLoadingUI && isPlaying ? 'animate-pulse' : ''}`}>
+                    {showLoadingUI && isPlaying 
+                      ? (language === 'zh' ? '正在加载' : 'Loading...') 
+                      : (language === 'zh' ? '正在播放' : 'Now Playing')}
                   </span>
                 </div>
                 <button 
@@ -386,9 +408,16 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
                     </button>
                     <button 
                       onClick={handlePlayPause}
-                      className="w-12 h-12 bg-white/20 hover:bg-white/30 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-2xl backdrop-blur-xl border border-white/30"
+                      className="w-12 h-12 bg-white/20 hover:bg-white/30 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-2xl backdrop-blur-xl border border-white/30 relative overflow-hidden"
                     >
-                      {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+                      {showLoadingUI && isPlaying ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                          <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        </div>
+                      ) : null}
+                      <div className={showLoadingUI && isPlaying ? 'opacity-0' : 'opacity-100'}>
+                        {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+                      </div>
                     </button>
                     <button onClick={handleNext} className="text-white/80 hover:text-white transition-colors hover:scale-110 transform drop-shadow-md">
                       <SkipForward className="w-5 h-5 fill-current" />
