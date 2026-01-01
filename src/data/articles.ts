@@ -616,5 +616,20 @@ export const ARTICLE_DATA = [
     en: {
       title: 'Channel Intro | Random Thoughts',
     }
+  },
+  {
+    id: 't9',
+    common: {
+      category: ArticleCategory.TALK,
+      link: 'https://mp.weixin.qq.com/s/w4zffCFyA_CTeK4Dw65WZA',
+      coverImage: 'https://mmbiz.qpic.cn/mmbiz_png/MpZIibj0bjSzQdkyIrDDEBYTAyUn71qQJx1icSV5XibvKBnY78bPD4l947F8OWvwmYLW1Actc8mVMSCdaJsiczibUibg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=1',
+      date: '2026-01-01'
+    },
+    zh: {
+      title: 'why LuN3cy？我ID的由来',
+    },
+    en: {
+      title: 'why LuN3cy？My ID History',
+    }
   }
 ];

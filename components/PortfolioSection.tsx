@@ -56,11 +56,18 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ language, ex
     }
   }, [externalFilter]);
 
-  // Get Categories from current language projects
+  // Get Categories in preferred order
   const currentProjects = PROJECTS[language];
-  // Extract unique categories and add Development manually if not present (since it has no projects yet)
-  const availableCategories = Array.from(new Set(currentProjects.map(p => p.category)));
-  if (!availableCategories.includes(Category.DEV)) availableCategories.push(Category.DEV);
+  const preferredOrder = [
+    Category.PHOTO,
+    Category.VIDEO,
+    Category.DESIGN,
+    Category.DEV
+  ];
+  
+  const availableCategories = preferredOrder.filter(cat => 
+    currentProjects.some(p => p.category === cat) || cat === Category.DEV
+  );
   
   const categories = ['All', ...availableCategories];
 

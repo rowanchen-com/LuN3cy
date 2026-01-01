@@ -5,8 +5,8 @@ import { DEV_DATA } from './dev';
 import { PHOTOGRAPHY_PROJECTS } from './photography_projects';
 
 export const PROJECT_DATA = [
-  ...VIDEOGRAPHY_DATA,
   ...PHOTOGRAPHY_PROJECTS,
+  ...VIDEOGRAPHY_DATA,
   ...DESIGN_DATA,
   ...DEV_DATA
 ];
