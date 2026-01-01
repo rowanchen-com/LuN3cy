@@ -17,7 +17,10 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(() => {
+    const saved = localStorage.getItem('music-player-volume');
+    return saved !== null ? parseFloat(saved) : 0.37;
+  });
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,21 +28,37 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const fadeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const loadingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const currentSong = MUSIC_PLAYLIST[currentSongIndex];
 
   const [hasInteracted, setHasInteracted] = useState(false);
 
+  // Persistence
+  useEffect(() => {
+    localStorage.setItem('music-player-volume', volume.toString());
+  }, [volume]);
+
   // Debounce loading UI to prevent flickering on fast connections
   useEffect(() => {
-    let timer: NodeJS.Timeout;
     if (isLoading) {
-      timer = setTimeout(() => {
+      // If we're already showing loading, don't start another timer
+      if (loadingTimerRef.current) return;
+      
+      loadingTimerRef.current = setTimeout(() => {
         setShowLoadingUI(true);
-      }, 400); // Only show loading spinner if it takes longer than 400ms
+      }, 300); // Only show loading spinner if it takes longer than 300ms
     } else {
+      if (loadingTimerRef.current) {
+        clearTimeout(loadingTimerRef.current);
+        loadingTimerRef.current = null;
+      }
       setShowLoadingUI(false);
     }
-    return () => clearTimeout(timer);
+    return () => {
+      if (loadingTimerRef.current) {
+        clearTimeout(loadingTimerRef.current);
+      }
+    };
   }, [isLoading]);
 
   // Clear fade interval on unmount
@@ -172,14 +191,6 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({ initialVisible = false
     if (accept) {
       setIsOpen(true);
       setIsPlaying(true);
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    if (newVolume > 0 && isMuted) {
-      setIsMuted(false);
     }
   };
 
